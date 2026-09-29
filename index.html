@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Analyseur Ligue des Nations</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7f9;--card:#fff;--tx:#14181f;--mu:#5d6675;--bd:#dde1e8;--ac:#1a5fd0;--gd:#16803c;--bad:#b42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1116;--card:#171b22;--tx:#e8ebf0;--mu:#98a1b0;--bd:#2a313c;--ac:#6ea1ff;--gd:#4ade80;--bad:#f87171}}
+:root[data-theme="dark"]{--bg:#0e1116;--card:#171b22;--tx:#e8ebf0;--mu:#98a1b0;--bd:#2a313c;--ac:#6ea1ff;--gd:#4ade80;--bad:#f87171}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:.2em 0}h2{font-size:1.05rem;margin:0 0 .6em}
+.sub{color:var(--mu);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1 1 130px}
+label{display:block;font-size:.8rem;color:var(--mu);margin-bottom:2px}
+select,input,textarea{width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+button{padding:10px 14px;border:0;border-radius:8px;background:var(--ac);color:#fff;font:inherit;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.bar{display:flex;height:26px;border-radius:6px;overflow:hidden;margin:6px 0;font-size:.8rem;color:#fff}
+.bar div{display:flex;align-items:center;justify-content:center;min-width:0}
+.b1{background:#1a5fd0}.bx{background:#6b7380}.b2{background:#c2410c}
+.agent{border-left:3px solid var(--ac);padding:4px 10px;margin:6px 0;font-size:.9rem}
+.agent b{display:block}.mu{color:var(--mu)}.gd{color:var(--gd)}.bad{color:var(--bad)}
+.note{font-size:.8rem;color:var(--mu)}
+.tblw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{padding:4px 6px;border-bottom:1px solid var(--bd);text-align:left}
+</style></head><body><main>
+<h1>⚽ Analyseur Ligue des Nations</h1>
+<p class="sub">Moteur multi-agents : probabilités calibrées, cotes, valeur et mise prudente. Aucun résultat n'est garanti.</p>
+<p id="upd" class="note"></p>
+
+<div class="card"><h2>1. Match</h2>
+<div class="row"><div><label>Équipe A (domicile)</label><select id="A"></select></div><div><label>Équipe B</label><select id="B"></select></div></div>
+<label style="margin-top:8px"><input type="checkbox" id="neu" style="width:auto"> Terrain neutre (sans avantage domicile)</label>
+<h2 style="margin-top:12px">2. Cotes du bookmaker (optionnel)</h2>
+<div class="row"><div><label>Victoire A</label><input id="o1" type="number" step="0.01" min="1.01"></div><div><label>Nul</label><input id="ox" type="number" step="0.01" min="1.01"></div><div><label>Victoire B</label><input id="o2" type="number" step="0.01" min="1.01"></div><div><label>Capital</label><input id="bk" type="number" value="100" min="0"></div></div>
+<button id="go">Lancer l'analyse</button></div>
+
+<div id="out"></div>
+
+<div class="card"><h2>Prochains matchs (Ligues A et B)</h2><div id="fx"></div><p class="note">Probabilités du modèle, domicile pour la première équipe. Cliquez sur Analyser pour ajouter les cotes.</p></div>
+<div class="card"><h2>3. Agent Validation : backtest sur vos résultats</h2>
+<p class="note">Collez des résultats passés, un par ligne, dans l'ordre chronologique : <code>Équipe A;buts A;buts B;Équipe B</code>. L'agent prédit chaque match avant de le connaître, mesure sa qualité, puis met à jour les notes Elo.</p>
+<textarea id="res" rows="5" placeholder="France;2;0;Italie&#10;Espagne;1;1;Portugal"></textarea>
+<button id="ld" style="background:var(--mu)">Charger les 22 résultats officiels (Ligues A et B, 24-27 sept. 2026)</button>
+<button id="bt">Backtester et mettre à jour</button><div id="btout" class="note" style="margin-top:8px"></div></div>
+
+<div class="card"><h2>4. Mon journal de paris</h2><div class="row"><div style="flex:3 1 200px"><label>Pari (match et choix)</label><input id="jd" placeholder="Espagne gagne vs Croatie"></div><div><label>Cote</label><input id="jc" type="number" step="0.01"></div><div><label>Mise</label><input id="jm" type="number" step="0.01"></div></div><button id="ja">Ajouter</button><div id="jl" style="margin-top:8px"></div><p class="note">Tout est enregistré dans ce navigateur uniquement : résultats déjà comptés, notes Elo et paris.</p><button id="rs" style="background:var(--bad)">Tout réinitialiser</button></div>
+<details class="card"><summary><b>Notes Elo des équipes (modifiables)</b></summary>
+<p class="note">Valeurs de départ approximatives, à corriger avec des sources à jour (ex. eloratings.net).</p>
+<div class="tblw"><table id="tb"></table></div></details>
+
+<p class="note">Aucun pronostic n'est certain : le football garde une part de hasard irréductible. Les bons modèles se mesurent à la calibration et au backtest, jamais à une promesse de précision. Le pari comporte un risque de perte ; jouez de manière responsable.</p>
+</main>
+<script>
+const elo={"Espagne":2170,"France":2100,"Angleterre":2050,"Portugal":2010,"Pays-Bas":2000,"Allemagne":1980,"Italie":1930,"Croatie":1940,"Belgique":1900,"Danemark":1880,"Suisse":1870,"Autriche":1870,"Norvège":1840,"Turquie":1840,"Serbie":1800,"Écosse":1800,"Pologne":1800,"Ukraine":1810,"Hongrie":1790,"Grèce":1780,"Tchéquie":1780,"Suède":1780,"Israël":1650,"Pays de Galles":1750,"Irlande":1700,"Kosovo":1700,"Géorgie":1700,"Irlande du Nord":1650,"Bosnie":1750,"Roumanie":1760,"Slovénie":1720,"Macédoine du Nord":1650};
+let OFFICIEL=`Pays-Bas;1;1;Allemagne
+Serbie;1;2;Grèce
+Norvège;3;2;Danemark
+Portugal;1;0;Pays de Galles
+Autriche;3;1;Israël
+Kosovo;1;0;Irlande
+Géorgie;0;1;Irlande du Nord
+Italie;0;2;Belgique
+Turquie;0;1;France
+Hongrie;0;1;Ukraine
+Pologne;0;0;Bosnie
+Suède;2;1;Roumanie
+Slovénie;0;0;Écosse
+Tchéquie;1;2;Croatie
+Angleterre;2;3;Espagne
+Macédoine du Nord;0;3;Suisse
+Serbie;1;2;Pays-Bas
+Danemark;2;0;Pays de Galles
+Autriche;3;1;Kosovo
+Allemagne;0;1;Grèce
+Norvège;1;2;Portugal
+Israël;0;3;Irlande`;
+const $=id=>document.getElementById(id);
+const KEY="ldn_v1";let S={done:[],bets:[],elo:null};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+if(S.elo)Object.assign(elo,S.elo);
+const save=()=>{S.elo={...elo};try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const P=(k,l)=>{let r=Math.exp(-l);for(let i=1;i<=k;i++)r*=l/i;return r};
+function fill(){const n=Object.keys(elo).sort();["A","B"].forEach((id,i)=>{const s=$(id),v=s.value;s.innerHTML=n.map(t=>`<option>${t}</option>`).join("");s.value=v||n[i?7:5]||n[i]});
+$("tb").innerHTML="<tr><th>Équipe</th><th>Elo</th></tr>"+n.map(t=>`<tr><td>${t}</td><td><input type="number" value="${Math.round(elo[t])}" data-t="${t}" style="width:90px"></td></tr>`).join("")}
+$("tb").addEventListener("change",e=>{if(e.target.dataset.t)elo[e.target.dataset.t]=+e.target.value});
+// Agent Elo + Agent Poisson
+function model(a,b,neu){const d=elo[a]-elo[b]+(neu?0:75);const la=1.3*Math.exp(d/800),lb=1.3*Math.exp(-d/800);
+const M=[];let p1=0,px=0,p2=0,ov=0,bt=0;const sc=[];
+for(let i=0;i<=8;i++){M[i]=[];for(let j=0;j<=8;j++){const p=P(i,la)*P(j,lb);M[i][j]=p;if(i>j)p1+=p;else if(i==j)px+=p;else p2+=p;if(i+j>2)ov+=p;if(i&&j)bt+=p;sc.push([i+"-"+j,p])}}
+const s=p1+px+p2;sc.sort((x,y)=>y[1]-x[1]);return{la,lb,p:[p1/s,px/s,p2/s],ov:ov/s,bt:bt/s,sc:sc.slice(0,3),d}}
+const pc=x=>(x*100).toFixed(1)+" %";
+// Agent Marché : cotes -> probabilités sans marge
+function market(o){if(o.some(x=>!(x>1)))return null;const r=o.map(x=>1/x),s=r.reduce((a,b)=>a+b);return{p:r.map(x=>x/s),margin:s-1}}
+function run(){const a=$("A").value,b=$("B").value;if(a===b){$("out").innerHTML='<div class="card bad">Choisissez deux équipes différentes.</div>';return}
+const m=model(a,b,$("neu").checked),o=["o1","ox","o2"].map(i=>+$(i).value),mk=market(o),bank=+$("bk").value||0;
+const nm=[a,"Nul",b];let h=`<div class="card"><h2>Résultat : ${a} vs ${b}</h2>
+<div class="bar"><div class="b1" style="width:${m.p[0]*100}%">${pc(m.p[0])}</div><div class="bx" style="width:${m.p[1]*100}%">${pc(m.p[1])}</div><div class="b2" style="width:${m.p[2]*100}%">${pc(m.p[2])}</div></div>
+<div class="note">${a} · Nul · ${b}</div>
+<p>Buts attendus : <b>${m.la.toFixed(2)}</b> – <b>${m.lb.toFixed(2)}</b> · Plus de 2,5 buts : <b>${pc(m.ov)}</b> · Les deux marquent : <b>${pc(m.bt)}</b></p>
+<p>Scores les plus probables : ${m.sc.map(s=>`<b>${s[0]}</b> (${pc(s[1])})`).join(", ")}</p></div>`;
+h+=`<div class="card"><h2>Rapport des agents</h2>
+<div class="agent"><b>Agent Elo</b>Écart de force : ${Math.round(m.d)} points (${a} ${Math.round(elo[a])}, ${b} ${Math.round(elo[b])}).</div>
+<div class="agent"><b>Agent Poisson</b>Distribution des scores sur 0 à 8 buts par équipe.</div>`;
+if(mk){const f=m.p.map((p,i)=>0.6*p+0.4*mk.p[i]);
+h+=`<div class="agent"><b>Agent Marché</b>Marge du bookmaker : ${pc(mk.margin)}. Probabilités sans marge : ${mk.p.map(pc).join(" / ")}.</div>
+<div class="agent"><b>Agent Fusion</b>Mélange 60 % modèle et 40 % marché : ${f.map(pc).join(" / ")}.</div>
+<div class="agent"><b>Agent Risque</b>`;
+let any=false;m.p.forEach((p,i)=>{const q=f[i],ev=q*o[i]-1;if(ev>0.03){any=true;const k=Math.min(0.03,Math.max(0,ev/(o[i]-1))/4);h+=`<span class="gd">Valeur sur ${nm[i]}</span> : espérance ${pc(ev)}, mise prudente (Kelly ¼, plafond 3 %) : ${pc(k)} du capital${bank?` (${(k*bank).toFixed(2)})`:""}.<br>`}});
+if(!any)h+=`<span class="mu">Aucune valeur nette détectée : ne pas parier est une décision valable.</span>`;
+const ecart=Math.max(...m.p.map((p,i)=>Math.abs(p-mk.p[i])));if(ecart>0.12)h+=`<br><span class="bad">Écart modèle/marché de ${pc(ecart)} : le marché connaît souvent des infos que le modèle ignore (blessures, compositions). Prudence.</span>`;
+h+="</div>"}else h+=`<div class="agent"><b>Agent Marché</b>Entrez les 3 cotes pour détecter la valeur et calculer la mise.</div>`;
+h+="</div>";$("out").innerHTML=h}
+// Agent Validation : backtest séquentiel
+function bt(){const L=$("res").value.trim().split("\n").filter(Boolean);let dup=0,n=0,br=0,ok=0,ll=0,bad=[];
+for(const l of L){if(S.done.includes(l)){dup++;continue}const x=l.split(";").map(s=>s.trim());const [a,ga,gb,b]=[x[0],+x[1],+x[2],x[3]];
+if(!(a in elo)||!(b in elo)||isNaN(ga)||isNaN(gb)){bad.push(l);continue}
+const m=model(a,b,false),r=ga>gb?0:ga==gb?1:2;
+br+=m.p.reduce((s,p,i)=>s+(p-(i==r?1:0))**2,0);ll+=-Math.log(Math.max(m.p[r],1e-9));ok+=m.p.indexOf(Math.max(...m.p))==r?1:0;n++;
+const e=1/(1+Math.pow(10,-(elo[a]-elo[b]+75)/400)),s=r==0?1:r==1?.5:0,g=Math.abs(ga-gb),mul=g<2?1:g==2?1.5:(11+g)/8;
+const dl=40*mul*(s-e);elo[a]+=dl;elo[b]-=dl;S.done.push(l)}save();
+fill();fxr();$("btout").innerHTML=n?`<b>${n} matchs analysés.</b> Bons résultats : ${(ok/n*100).toFixed(1)} % · Brier : ${(br/n).toFixed(3)} · Log-loss : ${(ll/n).toFixed(3)}<br>Repères : un modèle sans information donne un Brier d'environ 0,667 et une log-loss d'environ 1,10. Plus bas est meilleur. Un échantillon de moins de 300 matchs reste peu fiable.${dup?`<br>${dup} match(s) déjà comptés, ignorés.`:""}${bad.length?`<br><span class="bad">${bad.length} ligne(s) ignorée(s) (nom inconnu ou format incorrect).</span>`:""}`:`<span class="bad">Aucun match valide. Format : Équipe A;buts A;buts B;Équipe B, avec les noms tels qu'ils apparaissent dans la liste.</span>`}
+let FX=[["Belgique","France","28 sept."],["Turquie","Italie","28 sept."],["Tchéquie","Angleterre","29 sept."],["Espagne","Croatie","29 sept."],["Allemagne","Serbie","1 oct."],["Grèce","Pays-Bas","1 oct."],["Danemark","Portugal","1 oct."],["Pays de Galles","Norvège","1 oct."],["Belgique","Turquie","2 oct."],["France","Italie","2 oct."],["Croatie","Angleterre","3 oct."],["Espagne","Tchéquie","3 oct."],["Géorgie","Ukraine","28 sept."],["Irlande du Nord","Hongrie","28 sept."],["Roumanie","Bosnie","28 sept."],["Suède","Pologne","28 sept."],["Écosse","Suisse","29 sept."],["Slovénie","Macédoine du Nord","29 sept."],["Irlande","Autriche","1 oct."],["Israël","Kosovo","1 oct."],["Hongrie","Géorgie","2 oct."],["Ukraine","Irlande du Nord","2 oct."],["Bosnie","Suède","2 oct."],["Pologne","Roumanie","2 oct."]];
+function fxr(){$("fx").innerHTML='<div class="tblw"><table><tr><th>Date</th><th>Match</th><th>1</th><th>N</th><th>2</th><th></th></tr>'+FX.map((f,i)=>{const m=model(f[0],f[1],false).p;return `<tr><td>${f[2]}</td><td>${f[0]} – ${f[1]}</td><td>${Math.round(m[0]*100)}%</td><td>${Math.round(m[1]*100)}%</td><td>${Math.round(m[2]*100)}%</td><td><a href="#" data-i="${i}">Analyser</a></td></tr>`}).join("")+"</table></div>"}
+$("fx").onclick=e=>{const i=e.target.dataset.i;if(i==null)return;e.preventDefault();$("A").value=FX[i][0];$("B").value=FX[i][1];$("neu").checked=false;run();$("out").scrollIntoView()};
+function jr(){const b=S.bets;let st=0,pr=0;b.forEach(x=>{if(x.r){st+=x.m;pr+=x.r=="g"?x.m*(x.c-1):-x.m}});
+$("jl").innerHTML=(b.length?`<div class="tblw"><table>`+b.map((x,i)=>`<tr><td>${x.d}</td><td>@${x.c}</td><td>${x.m}</td><td>${x.r=="g"?'<span class="gd">Gagné</span>':x.r=="p"?'<span class="bad">Perdu</span>':`<a href="#" data-a="g" data-i="${i}">Gagné</a> · <a href="#" data-a="p" data-i="${i}">Perdu</a>`} · <a href="#" data-a="x" data-i="${i}">✕</a></td></tr>`).join("")+"</table></div>":"<p class='note'>Aucun pari enregistré.</p>")+`<p><b>Bilan (paris terminés)</b> : misé ${st.toFixed(2)} · profit <span class="${pr>=0?"gd":"bad"}">${pr.toFixed(2)}</span> · ROI ${st?(pr/st*100).toFixed(1):"0.0"} %</p>`}
+$("ja").onclick=()=>{const d=$("jd").value.trim().replace(/</g,"&lt;"),c=+$("jc").value,m=+$("jm").value;if(!d||!(c>1)||!(m>0))return;S.bets.push({d,c,m,r:""});save();$("jd").value="";jr()};
+$("jl").onclick=e=>{const i=e.target.dataset.i;if(i==null)return;e.preventDefault();const a=e.target.dataset.a;if(a=="x")S.bets.splice(i,1);else S.bets[i].r=a;save();jr()};
+let rc=0;$("rs").onclick=()=>{if(!rc){rc=1;$("rs").textContent="Cliquez encore pour confirmer";return}try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
+$("ld").onclick=()=>{$("res").value=OFFICIEL};$("go").onclick=run;$("bt").onclick=bt;fill();fxr();jr();run();
+fetch("data/results.json",{cache:"no-store"}).then(r=>r.json()).then(j=>{
+[...j.results.flatMap(x=>[x.h,x.a]),...j.fixtures.flatMap(x=>[x.h,x.a])].forEach(t=>{if(!(t in elo))elo[t]=1700});
+OFFICIEL=j.results.map(x=>[x.h,x.gh,x.ga,x.a].join(";")).join("\n");
+FX=j.fixtures.map(x=>[x.h,x.a,x.d]);
+const L=OFFICIEL.split("\n").filter(l=>l&&!S.done.includes(l));
+if(L.length){$("res").value=L.join("\n");bt()}else{fill();fxr()}
+$("upd").textContent="Données mises à jour : "+j.updated;
+}).catch(()=>{});
+</script></body></html>

@@ -1,0 +1,281 @@
+{
+ "updated": "28 sept. 2026 (données de départ)",
+ "results": [
+  {
+   "h": "Pays-Bas",
+   "a": "Allemagne",
+   "gh": 1,
+   "ga": 1,
+   "d": "24 sept."
+  },
+  {
+   "h": "Serbie",
+   "a": "Grèce",
+   "gh": 1,
+   "ga": 2,
+   "d": "24 sept."
+  },
+  {
+   "h": "Norvège",
+   "a": "Danemark",
+   "gh": 3,
+   "ga": 2,
+   "d": "24 sept."
+  },
+  {
+   "h": "Portugal",
+   "a": "Pays de Galles",
+   "gh": 1,
+   "ga": 0,
+   "d": "24 sept."
+  },
+  {
+   "h": "Autriche",
+   "a": "Israël",
+   "gh": 3,
+   "ga": 1,
+   "d": "24 sept."
+  },
+  {
+   "h": "Kosovo",
+   "a": "Irlande",
+   "gh": 1,
+   "ga": 0,
+   "d": "24 sept."
+  },
+  {
+   "h": "Géorgie",
+   "a": "Irlande du Nord",
+   "gh": 0,
+   "ga": 1,
+   "d": "25 sept."
+  },
+  {
+   "h": "Italie",
+   "a": "Belgique",
+   "gh": 0,
+   "ga": 2,
+   "d": "25 sept."
+  },
+  {
+   "h": "Turquie",
+   "a": "France",
+   "gh": 0,
+   "ga": 1,
+   "d": "25 sept."
+  },
+  {
+   "h": "Hongrie",
+   "a": "Ukraine",
+   "gh": 0,
+   "ga": 1,
+   "d": "25 sept."
+  },
+  {
+   "h": "Pologne",
+   "a": "Bosnie",
+   "gh": 0,
+   "ga": 0,
+   "d": "25 sept."
+  },
+  {
+   "h": "Suède",
+   "a": "Roumanie",
+   "gh": 2,
+   "ga": 1,
+   "d": "25 sept."
+  },
+  {
+   "h": "Slovénie",
+   "a": "Écosse",
+   "gh": 0,
+   "ga": 0,
+   "d": "26 sept."
+  },
+  {
+   "h": "Tchéquie",
+   "a": "Croatie",
+   "gh": 1,
+   "ga": 2,
+   "d": "26 sept."
+  },
+  {
+   "h": "Angleterre",
+   "a": "Espagne",
+   "gh": 2,
+   "ga": 3,
+   "d": "26 sept."
+  },
+  {
+   "h": "Macédoine du Nord",
+   "a": "Suisse",
+   "gh": 0,
+   "ga": 3,
+   "d": "26 sept."
+  },
+  {
+   "h": "Serbie",
+   "a": "Pays-Bas",
+   "gh": 1,
+   "ga": 2,
+   "d": "27 sept."
+  },
+  {
+   "h": "Danemark",
+   "a": "Pays de Galles",
+   "gh": 2,
+   "ga": 0,
+   "d": "27 sept."
+  },
+  {
+   "h": "Autriche",
+   "a": "Kosovo",
+   "gh": 3,
+   "ga": 1,
+   "d": "27 sept."
+  },
+  {
+   "h": "Allemagne",
+   "a": "Grèce",
+   "gh": 0,
+   "ga": 1,
+   "d": "27 sept."
+  },
+  {
+   "h": "Norvège",
+   "a": "Portugal",
+   "gh": 1,
+   "ga": 2,
+   "d": "27 sept."
+  },
+  {
+   "h": "Israël",
+   "a": "Irlande",
+   "gh": 0,
+   "ga": 3,
+   "d": "27 sept."
+  }
+ ],
+ "fixtures": [
+  {
+   "h": "Belgique",
+   "a": "France",
+   "d": "28 sept."
+  },
+  {
+   "h": "Turquie",
+   "a": "Italie",
+   "d": "28 sept."
+  },
+  {
+   "h": "Tchéquie",
+   "a": "Angleterre",
+   "d": "29 sept."
+  },
+  {
+   "h": "Espagne",
+   "a": "Croatie",
+   "d": "29 sept."
+  },
+  {
+   "h": "Allemagne",
+   "a": "Serbie",
+   "d": "1 oct."
+  },
+  {
+   "h": "Grèce",
+   "a": "Pays-Bas",
+   "d": "1 oct."
+  },
+  {
+   "h": "Danemark",
+   "a": "Portugal",
+   "d": "1 oct."
+  },
+  {
+   "h": "Pays de Galles",
+   "a": "Norvège",
+   "d": "1 oct."
+  },
+  {
+   "h": "Belgique",
+   "a": "Turquie",
+   "d": "2 oct."
+  },
+  {
+   "h": "France",
+   "a": "Italie",
+   "d": "2 oct."
+  },
+  {
+   "h": "Croatie",
+   "a": "Angleterre",
+   "d": "3 oct."
+  },
+  {
+   "h": "Espagne",
+   "a": "Tchéquie",
+   "d": "3 oct."
+  },
+  {
+   "h": "Géorgie",
+   "a": "Ukraine",
+   "d": "28 sept."
+  },
+  {
+   "h": "Irlande du Nord",
+   "a": "Hongrie",
+   "d": "28 sept."
+  },
+  {
+   "h": "Roumanie",
+   "a": "Bosnie",
+   "d": "28 sept."
+  },
+  {
+   "h": "Suède",
+   "a": "Pologne",
+   "d": "28 sept."
+  },
+  {
+   "h": "Écosse",
+   "a": "Suisse",
+   "d": "29 sept."
+  },
+  {
+   "h": "Slovénie",
+   "a": "Macédoine du Nord",
+   "d": "29 sept."
+  },
+  {
+   "h": "Irlande",
+   "a": "Autriche",
+   "d": "1 oct."
+  },
+  {
+   "h": "Israël",
+   "a": "Kosovo",
+   "d": "1 oct."
+  },
+  {
+   "h": "Hongrie",
+   "a": "Géorgie",
+   "d": "2 oct."
+  },
+  {
+   "h": "Ukraine",
+   "a": "Irlande du Nord",
+   "d": "2 oct."
+  },
+  {
+   "h": "Bosnie",
+   "a": "Suède",
+   "d": "2 oct."
+  },
+  {
+   "h": "Pologne",
+   "a": "Roumanie",
+   "d": "2 oct."
+  }
+ ]
+}
